@@ -1,0 +1,64 @@
+* Notas sobre Obey the Testing Goat
+
+[[file:kid_goat.png]]
+
+A partir de la lectura de algunos [[id:0fcc0643-9c72-4fdd-8657-1933525baa39][libros]] Estas son las notas actualizadas y el repositorio que va quedando.
+- Web : [[https://www.obeythetestinggoat.com/][Test Driven Development with Python]]
+
+[[file:tdd-python.png]]
+
+** Extending Our Functional Test Using the unittest Module
+
+- Los test que usan Selenium nos permiten analizar como funciona la aplicación a nivel Browser desde el punto de vista del usuario. Y por eso son llamados /Functional Test/ o /Acceptance Test/ o /End-to-End Test/.
+
+** Testing a Simple Home Page with Unit Tests
+
+*** En qué se diferencian los test funcionales de los test de unidad
+- Los test funcionales testean la aplicación desde afuera, desde el punto de vista del usuario.
+- Los test de unidad testean la aplicación desde adentro, desde el punto de vista del programador.
+*** Workflow
+1. Empezamos escribiendo un /test funcional/, describiendo nuevas funciones desde el punto de vista del usuario.
+2. Una vez que tenemos el test funcional fallando, empezamos a pensar en como escribir el código que cambie esto y lo pase. Es entonces cuando usamos uno o más /test de unidad/ para definir como queremos que se comporte el código - La idea es que cada línea de producción de código que escribamos sea testeada(al menos) por un /unit test/.
+3. Una vez que tenemos nuestro test de unidad fallando, escribimos la menor parte de código que podamos para que pase ese test.  Deberemos iterar entre los pasos 2 y 3 unas cuantas veces. Hasta que que pensemos que podemos avanzar un poco en el test funcional.
+4. Entonces volvemos a correr el test y vemos si pasa, o avanza. Esto nos puede llevar a escribir un nuevo test, y nuevo código y así continuar.
+*** Django’s MVC, URLs, and View Functions
+- Resolve :: es una función que Django usa internamente para resolver URLs y encontrar que función dentro de las vistas se mapean en esa URL. Estamos chequeando que =resolve=, cuando es llamada con ='/'=, la raíz del sitio, encuntre una función llamada =home_page=
+** DONE What Are We Doing with All These Tests? (And, Refactoring)
+CLOSED: [2022-03-02 mié 09:57]
+:LOGBOOK:
+CLOCK: [2022-03-02 mié 09:16]--[2022-03-02 mié 09:56] =>  0:40
+CLOCK: [2022-03-02 mié 08:46]--[2022-03-02 mié 09:11] =>  0:25
+:END:
+- Ojo a la diferencia entre =find_element_...= y =finds_elements_...= en la función de selenium. Uno devuelve un elemento y levanta una excepción si no lo encuentra y el otro devuelve una lista que puede estar vacía =[]=
+- Regla general, No testes una contante y testear texto HTML es testear constantes
+- Podemos pasar mensajes personalizados en los casos de error en cualquier método =assertX=
+- Refactoring :: Mejorar el código sin afectar su funcionalidad
+** Saving the POST to the Database
+- Cada tesst solo debe testear una cosa
+- [[https://en.wikipedia.org/wiki/Post/Redirect/Get][Siempre redirect después de POST]]
+** Rendering Items in template
+** NEXT Improving Functional Tests: Ensuring Isolation and Removing Voodoo Sleeps
+:LOGBOOK:
+CLOCK: [2022-03-03 jue 07:53]--[2022-03-03 jue 08:18] =>  0:25
+:END:
+- Para poder usar =LiveServerTest= de Django. pasamos nuestros test funcionales a un directorio convirtiéndolo en un módulo.
+- cambiamos la clase =NewVisitorTest= para que use =LiveServerTest=
+** NEXT On Implicit and Explicit Waits, and Voodoo =time.sleeps=
+:LOGBOOK:
+CLOCK: [2022-03-03 jue 08:41]
+:END:
+- Vamos a cambiar el =time.sleep()= por una herramienta que espere lo justo y necesario.
+#+begin_src python
+def wait_for_row_in_list_table(self, row_tex):
+        start_time = time.time()
+        while True:
+            try:
+                table = self.browser.find_element_by_id("id_list_table")
+                rows = table.find_elements_by_tag_name("tr")
+                self.assertIn(row_tex, [row.text for row in rows])
+                return
+            except (AssertionError, WebDriverException) as e:
+                if time.time() - start_time > MAX_WAIT:
+                    raise e
+                time.sleep(0.5)
+#+end_src
