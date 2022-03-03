@@ -64,3 +64,26 @@ def wait_for_row_in_list_table(self, row_tex):
                     raise e
                 time.sleep(0.5)
 #+end_src
+
+** NEXT Working Incrementally
+:LOGBOOK:
+CLOCK: [2022-03-03 jue 09:12]
+:END:
+- Para esta app, diseñaremos una Representational Stat Transfer (REST) API, no estricta, pero aproximada.
+  - /lists/<list_ID> para las listas método GET
+  - /lists/new para nuevas listas POST
+  - /lists/<list_ID>/add_item para agregar un item POST (debería set PUT)
+- NUEVO DISEÑO - Tareas:
+  - Ajustar el modelo para que los items se asocien a distintas listas
+  - agregar URL únicas para cada lista
+  - agregar URL para crear una lista vía POST
+  - agregar URLs para agregar items a una lista vía POST
+*** Implementing the New Design Incrementally Using TDD
+
+Veamos el proceso de los test funcionales y unitarios
+
+[[file:tdd-design.png]]
+
+- Vamos a crear una nueva funcionalidad y refactorizar. Reescribiremos algunas de las nuevas implementaciones para que entregue la misma funcionalidad al usuario pero con aspectos del nuevo diseño.
+- Usaremos le FT existente para verificar que no rompemos lo que ya hicimos y agregaremos nuevos FT para los nuevas funcionalidads
+- Al nivel de los UT agregaremos nuevos test o modificaremso los existentes.
