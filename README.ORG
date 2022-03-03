@@ -1,5 +1,7 @@
 * Notas sobre Obey the Testing Goat
 
+#+attr_html: :width 100px
+#+attr_latex: :width 100px
 [[file:kid_goat.png]]
 
 A partir de la lectura de algunos [[id:0fcc0643-9c72-4fdd-8657-1933525baa39][libros]] Estas son las notas actualizadas y el repositorio que va quedando.
